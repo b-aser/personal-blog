@@ -4,12 +4,16 @@ import { likePost } from '@/app/(frontend)/actions/likes'
 import { cn } from '@/lib/utils'
 import {
   CirclePlay,
+  Heart,
   HeartPlus,
   MessageCircle,
   Repeat2,
   Share,
 } from 'lucide-react'
-import { useState, type ReactNode } from 'react'
+import { HandsClapping } from "@phosphor-icons/react"           // stroke
+import { useEffect, useState, type ReactNode } from 'react'
+
+const likedStorageKey = (postId: number) => `liked_${postId}`
 
 function formatCount(count: number) {
   if (count >= 1_000_000) {
@@ -71,6 +75,15 @@ export function PostActionBar({
 }: Props) {
   const [likes, setLikes] = useState(likeCount)
   const [liking, setLiking] = useState(false)
+  const [liked, setLiked] = useState(false)
+
+  useEffect(() => {
+    setLiked(localStorage.getItem(likedStorageKey(postId)) === 'true')
+  }, [postId])
+
+  useEffect(() => {
+    setLikes(likeCount)
+  }, [likeCount])
 
   const scrollToComments = () => {
     document.getElementById('comments')?.scrollIntoView({ behavior: 'smooth' })
@@ -78,19 +91,28 @@ export function PostActionBar({
 
   const handleLike = async () => {
     if (liking) return
+    if (liked) {
+      localStorage.removeItem(likedStorageKey(postId))
+      setLiked(false)
+      setLikes((n) => Math.max(0, n - 1))
+      return
+    }
 
     const previous = likes
     setLikes((n) => n + 1)
+    setLiked(true)
     setLiking(true)
 
     const result = await likePost(postId, postSlug)
 
     setLiking(false)
-
     if (result.ok) {
+      localStorage.setItem(likedStorageKey(postId), 'true')
       setLikes(result.likes)
     } else {
+      localStorage.removeItem(likedStorageKey(postId))
       setLikes(previous)
+      setLiked(false)
     }
   }
 
@@ -106,12 +128,15 @@ export function PostActionBar({
   return (
     <div className="my-4 flex items-center justify-between border-y border-border py-3">
       <div className="flex items-center gap-5 sm:gap-6">
+
+        {/* if the blog is liked alredy clinking the second time it will be unliked */}
+
         <ActionButton
           label="Like"
           onClick={handleLike}
           disabled={liking}
         >
-          <HeartPlus className="size-5 stroke-[1.5]" />
+          {liked ? <HandsClapping className="size-5 text-black fill-black" weight="fill" /> : <HandsClapping className="size-5" weight="regular" color="currentColor" />}
           <span className="text-sm tabular-nums">{formatCount(likes)}</span>
         </ActionButton>
 
