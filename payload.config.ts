@@ -6,6 +6,7 @@ import { Comments } from '@/collections/Comments'
 import { Media } from '@/collections/Media'
 import { Posts } from '@/collections/Posts'
 import { Users } from '@/collections/Users'
+import { s3Storage } from '@payloadcms/storage-s3'
 
 export default buildConfig({
   editor: lexicalEditor(),
@@ -23,10 +24,26 @@ export default buildConfig({
       connectionString: process.env.DATABASE_URL || '',
     },
   }),
+  plugins: [
+    s3Storage({
+      collections: {
+        media: true,
+      },
+      bucket: process.env.S3_BUCKET || '',
+      config: {
+        credentials: {
+          accessKeyId: process.env.S3_ACCESS_KEY_ID || '',
+          secretAccessKey: process.env.S3_SECRET_ACCESS_KEY || '',
+        },
+        region: process.env.S3_REGION || '',
+        // ... Other S3 configuration
+      },
+    }),
+  ],
   // If you want to resize images, crop, set focal point, etc.
   // make sure to install it and pass it to the config.
   // This is optional - if you don't need to do these things,
   // you don't need it!
-  
+
   sharp,
 })
