@@ -8,8 +8,8 @@ export function SiteHeader() {
         <Link href="/" className="text-lg font-semibold tracking-tight">
           Aser's Blog
         </Link>
-        <nav className="flex items-center gap-4 text-sm text-muted-foreground">
-          <Link href="/blog" className="hover:text-foreground">
+        <nav className="flex items-center gap-4 text-sm text-zinc-600 dark:text-zinc-400">
+          <Link href="/blog" className="hover:text-zinc-600 dark:hover:text-zinc-300">
             Posts
           </Link>
           <ModeToggle />
