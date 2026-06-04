@@ -7,6 +7,7 @@ import { useArticleSpeech } from '@/hooks/use-article-speech'
 import { CirclePause, CirclePlay, MessageCircle } from 'lucide-react'
 import { HandsClapping } from '@phosphor-icons/react'
 import { useEffect, useState, type ReactNode } from 'react'
+import { Badge } from '@/components/ui/badge'
 
 const likedStorageKey = (postId: number) => `liked_${postId}`
 
@@ -138,26 +139,36 @@ export function PostActionBar({
       </div>
 
       <div className="flex items-center gap-4 sm:gap-5">
-        <ActionButton
-          label={
-            !supported
-              ? 'Listen not supported in this browser'
-              : isPlaying
-                ? 'Pause listening'
-                : status === 'paused'
-                  ? 'Resume listening'
-                  : 'Listen to article'
-          }
-          onClick={toggle}
-          disabled={!supported || !articleSpeechText.trim()}
-          className={isPlaying ? 'text-foreground' : undefined}
-        >
-          {isPlaying ? (
-            <CirclePause className="size-6 stroke-[1.5]" />
-          ) : (
-            <CirclePlay className="size-6 stroke-[1.5]" />
-          )}
-        </ActionButton>
+
+        <div className="relative mx-4">
+          <ActionButton
+            label={
+              !supported
+                ? 'Listen not supported in this browser'
+                : isPlaying
+                  ? 'Pause listening'
+                  : status === 'paused'
+                    ? 'Resume listening'
+                    : 'Listen to article (beta)'
+            }
+            onClick={toggle}
+            disabled={!supported || !articleSpeechText.trim()}
+            className={isPlaying ? 'text-foreground' : undefined}
+          >
+            {isPlaying ? (
+              <CirclePause className="size-6 stroke-[1.5]" />
+            ) : (
+              <CirclePlay className="size-6 stroke-[1.5]" />
+            )}
+          </ActionButton>
+          <Badge
+            variant="secondary"
+            aria-hidden
+            className="pointer-events-none absolute -right-7 -top-2 z-10 h-4 border-border px-1.5 py-0 text-[10px] font-semibold leading-4"
+          >
+            Beta
+          </Badge>
+        </div>
 
         <ShareMenu postTitle={postTitle} />
       </div>
