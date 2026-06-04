@@ -3,9 +3,10 @@ import { getPayloadClient } from '@/lib/payload'
 
 export type PostListItem = Pick<
   Post,
-  'id' | 'title' | 'slug' | 'excerpt' | 'publishedAt' | 'status'
+  'id' | 'title' | 'slug' | 'excerpt' | 'publishedAt' | 'status' | 'tags'
 > & {
   featuredImage?: Media | string | null
+  authors?: Post['authors']
 }
 
 export async function getPublishedPosts(): Promise<PostListItem[]> {
@@ -14,7 +15,7 @@ export async function getPublishedPosts(): Promise<PostListItem[]> {
     collection: 'posts',
     where: { status: { equals: 'published' } },
     sort: '-publishedAt',
-    depth: 1,
+    depth: 2,
     limit: 100,
   })
   return result.docs as PostListItem[]

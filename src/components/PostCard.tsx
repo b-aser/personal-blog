@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { getAuthorNames } from '@/lib/blog-list'
 import { formatRelativeDate } from '@/lib/format-relative-date'
 import type { PostListItem } from '@/lib/posts'
 import type { Media } from '@payload-types'
@@ -9,11 +10,13 @@ function isMedia(value: unknown): value is Media {
 
 type Props = {
   post: PostListItem
+  showMeta?: boolean
 }
 
-export function PostCard({ post }: Props) {
+export function PostCard({ post, showMeta = false }: Props) {
   const date = formatRelativeDate(post.publishedAt)
   const image = isMedia(post.featuredImage) ? post.featuredImage : null
+  const authors = getAuthorNames(post)
 
   return (
     <article className="group border-b border-zinc-200 pb-10 dark:border-zinc-800">
@@ -27,13 +30,19 @@ export function PostCard({ post }: Props) {
           />
         </div>
       )}
-      {date && (
-        <time
-          dateTime={post.publishedAt ?? undefined}
-          className="text-sm text-zinc-500 dark:text-zinc-400"
-        >
-          {date}
-        </time>
+      <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-sm text-zinc-500 dark:text-zinc-400">
+        {showMeta && authors.length > 0 && (
+          <span className="font-medium text-zinc-700 dark:text-zinc-300">
+            {authors.join(', ')}
+          </span>
+        )}
+        {showMeta && authors.length > 0 && date && <span aria-hidden>·</span>}
+        {date && (
+          <time dateTime={post.publishedAt ?? undefined}>{date}</time>
+        )}
+      </div>
+      {showMeta && post.tags && (
+        <p className="mt-2 text-xs text-zinc-500 dark:text-zinc-400">{post.tags}</p>
       )}
       <h2 className="mt-2 text-2xl font-semibold tracking-tight">
         <Link

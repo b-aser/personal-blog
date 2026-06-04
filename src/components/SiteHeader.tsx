@@ -9,7 +9,7 @@ export function SiteHeader() {
           Aser's Blog
         </Link>
         <nav className="flex items-center gap-4 text-sm text-muted-foreground">
-          <Link href="/" className="hover:text-foreground">
+          <Link href="/blog" className="hover:text-foreground">
             Posts
           </Link>
           <ModeToggle />
