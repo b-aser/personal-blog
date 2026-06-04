@@ -42,7 +42,9 @@ export function PostCard({ post, showMeta = false }: Props) {
         )}
       </div>
       {showMeta && post.tags && (
-        <p className="mt-2 text-xs text-zinc-500 dark:text-zinc-400">{post.tags}</p>
+        post.tags.split(',').map((tag) => (
+          <span key={tag} className="mt-2 text-xs text-zinc-500 dark:text-zinc-400 bg-zinc-100 dark:bg-zinc-900 rounded-full px-2 py-1">{tag}</span>
+        ))
       )}
       <h2 className="mt-2 text-2xl font-semibold tracking-tight">
         <Link
@@ -53,7 +55,7 @@ export function PostCard({ post, showMeta = false }: Props) {
         </Link>
       </h2>
       {post.excerpt && (
-        <p className="mt-3 text-lg leading-relaxed text-zinc-600 dark:text-zinc-400">
+        <p className="mt-3 text-md leading-relaxed text-zinc-600 dark:text-zinc-400">
           {post.excerpt}
         </p>
       )}

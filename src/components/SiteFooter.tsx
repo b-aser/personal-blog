@@ -1,3 +1,4 @@
+import { RssIcon } from 'lucide-react'
 import Link from 'next/link'
 
 export function SiteFooter() {
@@ -13,14 +14,18 @@ export function SiteFooter() {
           >
             Aser&apos;s Blog
           </Link>
-          <p className="mt-2 text-sm text-muted-foreground ">
+          <p className="mt-2 text-xs text-muted-foreground ">
             Thoughts, notes, and writing.
           </p>
+          <Link href="/rss" className="text-xs tracking-tight hover:text-foreground flex items-center gap-1">
+            <p className="flex items-center gap-1">RSS Feed <RssIcon className="size-3" /></p>
+          </Link>
+          
 
         </div>
-        <div className="text-right text-sm text-muted-foreground"><p className="text-right text-sm text-muted-foreground">
+        <div className="text-right text-xs text-muted-foreground">
           © {year} Aser. All rights reserved.
-        </p></div>
+        </div>
 
       </div>
     </footer>
