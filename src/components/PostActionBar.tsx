@@ -3,8 +3,9 @@
 import { likePost } from '@/app/(frontend)/actions/likes'
 import { cn } from '@/lib/utils'
 import { ShareMenu } from '@/components/ShareMenu'
-import { CirclePlay, MessageCircle } from 'lucide-react'
-import { HandsClapping } from "@phosphor-icons/react"           // stroke
+import { useArticleSpeech } from '@/hooks/use-article-speech'
+import { CirclePause, CirclePlay, MessageCircle } from 'lucide-react'
+import { HandsClapping } from '@phosphor-icons/react'
 import { useEffect, useState, type ReactNode } from 'react'
 
 const likedStorageKey = (postId: number) => `liked_${postId}`
@@ -57,6 +58,7 @@ type Props = {
   commentCount: number
   repostCount?: number
   postTitle: string
+  articleSpeechText: string
 }
 
 export function PostActionBar({
@@ -66,7 +68,11 @@ export function PostActionBar({
   commentCount,
   repostCount = 0,
   postTitle,
+  articleSpeechText,
 }: Props) {
+  const { status, supported, toggle, isPlaying } = useArticleSpeech(
+    articleSpeechText,
+  )
   const [likes, setLikes] = useState(likeCount)
   const [liking, setLiking] = useState(false)
   const [liked, setLiked] = useState(false)
@@ -132,8 +138,25 @@ export function PostActionBar({
       </div>
 
       <div className="flex items-center gap-4 sm:gap-5">
-        <ActionButton label="Listen">
-          <CirclePlay className="size-6 stroke-[1.5]" />
+        <ActionButton
+          label={
+            !supported
+              ? 'Listen not supported in this browser'
+              : isPlaying
+                ? 'Pause listening'
+                : status === 'paused'
+                  ? 'Resume listening'
+                  : 'Listen to article'
+          }
+          onClick={toggle}
+          disabled={!supported || !articleSpeechText.trim()}
+          className={isPlaying ? 'text-foreground' : undefined}
+        >
+          {isPlaying ? (
+            <CirclePause className="size-6 stroke-[1.5]" />
+          ) : (
+            <CirclePlay className="size-6 stroke-[1.5]" />
+          )}
         </ActionButton>
 
         <ShareMenu postTitle={postTitle} />

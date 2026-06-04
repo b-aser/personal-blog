@@ -11,6 +11,7 @@ import {
   formatRelativeDate,
   wasUpdatedAfterPublish,
 } from '@/lib/format-relative-date'
+import { buildArticleSpeechText } from '@/lib/article-speech'
 import {
   extractTextFromRichText,
   formatReadingTime,
@@ -53,12 +54,15 @@ export default async function BlogPostPage({ params }: Props) {
     author && typeof author === 'object' && 'avatar' in author && isMedia(author.avatar)
       ? author.avatar
       : null
+  const articleBodyText = extractTextFromRichText(post.content)
   const readingTime = formatReadingTime(
-    getReadingTimeMinutes(
-      post.title,
-      post.excerpt,
-      extractTextFromRichText(post.content),
-    ),
+    getReadingTimeMinutes(post.title, post.excerpt, articleBodyText),
+  )
+  const articleSpeechText = buildArticleSpeechText(
+    post.title,
+    typeof author === 'object' && author?.name ? `By ${author.name}` : null,
+    post.excerpt,
+    articleBodyText,
   )
 
   return (
@@ -116,6 +120,7 @@ export default async function BlogPostPage({ params }: Props) {
             likeCount={post.likes ?? 0}
             commentCount={comments.length}
             postTitle={post.title}
+            articleSpeechText={articleSpeechText}
           />
 
           
