@@ -13,6 +13,7 @@ export const Comments: CollectionConfig = {
     },
     create: () => true,
     update: ({ req: { user } }) => Boolean(user),
+    // Public deletes go through the site action with a per-comment delete token.
     delete: ({ req: { user } }) => Boolean(user),
   },
   fields: [
@@ -42,17 +43,30 @@ export const Comments: CollectionConfig = {
       required: true,
     },
     {
+      name: 'deleteToken',
+      type: 'text',
+      required: true,
+      admin: {
+        hidden: true,
+        readOnly: true,
+      },
+      access: {
+        read: ({ req: { user } }) => Boolean(user),
+        update: () => false,
+      },
+    },
+    {
       name: 'status',
       type: 'select',
       required: true,
-      defaultValue: 'pending',
+      defaultValue: 'approved',
       options: [
         { label: 'Pending', value: 'pending' },
         { label: 'Approved', value: 'approved' },
         { label: 'Rejected', value: 'rejected' },
       ],
       admin: {
-        description: 'Only approved comments appear on the blog.',
+        description: 'Rejected comments are hidden on the blog. New comments publish immediately.',
       },
     },
   ],

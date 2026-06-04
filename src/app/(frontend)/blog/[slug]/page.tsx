@@ -2,24 +2,25 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { CommentForm } from '@/components/CommentForm'
+import { CommentList } from '@/components/CommentList'
 import { PostActionBar } from '@/components/PostActionBar'
 import { RichText } from '@/components/RichText'
 import { SiteHeader } from '@/components/SiteHeader'
 import { getApprovedCommentsForPost, getPostBySlug } from '@/lib/posts'
+import {
+  formatRelativeDate,
+  wasUpdatedAfterPublish,
+} from '@/lib/format-relative-date'
+import {
+  extractTextFromRichText,
+  formatReadingTime,
+  getReadingTimeMinutes,
+} from '@/lib/reading-time'
 import type { Media } from '@payload-types'
 import type { SerializedEditorState } from '@payloadcms/richtext-lexical/lexical'
 
 type Props = {
   params: Promise<{ slug: string }>
-}
-
-function formatDate(value: string | null | undefined) {
-  if (!value) return null
-  return new Date(value).toLocaleDateString('en-US', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-  })
 }
 
 function isMedia(value: unknown): value is Media {
@@ -44,13 +45,21 @@ export default async function BlogPostPage({ params }: Props) {
 
   const comments = await getApprovedCommentsForPost(post.id)
   const image = isMedia(post.featuredImage) ? post.featuredImage : null
-  const date = formatDate(post.publishedAt)
-  const updatedAt = formatDate(post.updatedAt)
+  const date = formatRelativeDate(post.publishedAt)
+  const updatedAt = formatRelativeDate(post.updatedAt)
+  const showUpdated = wasUpdatedAfterPublish(post.publishedAt, post.updatedAt)
   const author = post.authors?.[0]
   const authorAvatar =
     author && typeof author === 'object' && 'avatar' in author && isMedia(author.avatar)
       ? author.avatar
       : null
+  const readingTime = formatReadingTime(
+    getReadingTimeMinutes(
+      post.title,
+      post.excerpt,
+      extractTextFromRichText(post.content),
+    ),
+  )
 
   return (
     <>
@@ -84,16 +93,19 @@ export default async function BlogPostPage({ params }: Props) {
             {typeof author === 'object' && author?.name && (
               <span className="font-medium text-foreground">{author.name}</span>
             )}
+            <span aria-hidden>·</span>
+            <span >{readingTime}</span>
             {date && (
               <>
                 <span aria-hidden>·</span>
-                <time>{date}</time>
+                <time dateTime={post.publishedAt ?? undefined}>{date}</time>
               </>
             )}
-            {updatedAt && updatedAt !== date && (
+
+            {showUpdated && updatedAt && (
               <>
                 <span aria-hidden>·</span>
-                <time>Updated {updatedAt}</time>
+                <time dateTime={post.updatedAt ?? undefined}>Updated {updatedAt}</time>
               </>
             )}
           </div>
@@ -130,27 +142,19 @@ export default async function BlogPostPage({ params }: Props) {
             Comments {comments.length > 0 && `(${comments.length})`}
           </h2>
 
-          {comments.length > 0 ? (
-            <ul className="mt-8 space-y-8">
-              {comments.map((comment) => (
-                <li key={comment.id} className="border-l-2 border-zinc-200 pl-4 dark:border-zinc-700">
-                  <p className="font-medium">{comment.authorName}</p>
-                  <p className="mt-2 whitespace-pre-wrap text-zinc-700 dark:text-zinc-300">
-                    {comment.body}
-                  </p>
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <p className="mt-4 text-zinc-500 dark:text-zinc-400">
-              No comments yet. Be the first.
-            </p>
-          )}
+          <CommentList
+            comments={comments.map((c) => ({
+              id: c.id,
+              authorName: c.authorName,
+              body: c.body,
+            }))}
+            postSlug={post.slug}
+          />
 
           <div className="mt-10">
             <h3 className="text-lg font-medium">Leave a comment</h3>
             <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400">
-              Comments are moderated before they appear.
+              You can delete your own comments from this browser after posting.
             </p>
             <div className="mt-6">
               <CommentForm postId={post.id} postSlug={post.slug} />

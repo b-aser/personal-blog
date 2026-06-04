@@ -1,15 +1,7 @@
 import Link from 'next/link'
+import { formatRelativeDate } from '@/lib/format-relative-date'
 import type { PostListItem } from '@/lib/posts'
 import type { Media } from '@payload-types'
-
-function formatDate(value: string | null | undefined) {
-  if (!value) return null
-  return new Date(value).toLocaleDateString('en-US', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-  })
-}
 
 function isMedia(value: unknown): value is Media {
   return typeof value === 'object' && value !== null && 'url' in value
@@ -20,7 +12,7 @@ type Props = {
 }
 
 export function PostCard({ post }: Props) {
-  const date = formatDate(post.publishedAt)
+  const date = formatRelativeDate(post.publishedAt)
   const image = isMedia(post.featuredImage) ? post.featuredImage : null
 
   return (
@@ -36,7 +28,12 @@ export function PostCard({ post }: Props) {
         </div>
       )}
       {date && (
-        <time className="text-sm text-zinc-500 dark:text-zinc-400">{date}</time>
+        <time
+          dateTime={post.publishedAt ?? undefined}
+          className="text-sm text-zinc-500 dark:text-zinc-400"
+        >
+          {date}
+        </time>
       )}
       <h2 className="mt-2 text-2xl font-semibold tracking-tight">
         <Link

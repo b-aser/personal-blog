@@ -225,8 +225,9 @@ export interface Comment {
    */
   authorEmail: string;
   body: string;
+  deleteToken: string;
   /**
-   * Only approved comments appear on the blog.
+   * Rejected comments are hidden on the blog. New comments publish immediately.
    */
   status: 'pending' | 'approved' | 'rejected';
   updatedAt: string;
@@ -383,6 +384,7 @@ export interface CommentsSelect<T extends boolean = true> {
   authorName?: T;
   authorEmail?: T;
   body?: T;
+  deleteToken?: T;
   status?: T;
   updatedAt?: T;
   createdAt?: T;

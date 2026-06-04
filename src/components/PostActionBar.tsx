@@ -2,14 +2,8 @@
 
 import { likePost } from '@/app/(frontend)/actions/likes'
 import { cn } from '@/lib/utils'
-import {
-  CirclePlay,
-  Heart,
-  HeartPlus,
-  MessageCircle,
-  Repeat2,
-  Share,
-} from 'lucide-react'
+import { ShareMenu } from '@/components/ShareMenu'
+import { CirclePlay, MessageCircle } from 'lucide-react'
 import { HandsClapping } from "@phosphor-icons/react"           // stroke
 import { useEffect, useState, type ReactNode } from 'react'
 
@@ -116,15 +110,6 @@ export function PostActionBar({
     }
   }
 
-  const handleShare = async () => {
-    const url = window.location.href
-    if (navigator.share) {
-      await navigator.share({ title: postTitle, url })
-      return
-    }
-    await navigator.clipboard.writeText(url)
-  }
-
   return (
     <div className="my-4 flex items-center justify-between border-y border-border py-3">
       <div className="flex items-center gap-5 sm:gap-6">
@@ -151,9 +136,7 @@ export function PostActionBar({
           <CirclePlay className="size-6 stroke-[1.5]" />
         </ActionButton>
 
-        <ActionButton label="Share" onClick={handleShare}>
-          <Share className="size-6 stroke-[1.5]" />
-        </ActionButton>
+        <ShareMenu postTitle={postTitle} />
       </div>
     </div>
   )

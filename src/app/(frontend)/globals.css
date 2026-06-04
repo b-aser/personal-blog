@@ -79,12 +79,25 @@ body {
   color: var(--foreground);
   font-family: var(--font-montserrat), system-ui, sans-serif;
 }
+h2 {
+  font-size: 1.75rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+
+}
+h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
 
 .prose h1,
 .prose h2,
 .prose h3 {
   font-weight: 600;
   letter-spacing: -0.02em;
+  font-family: var(--font-montserrat);
+  line-height: 1.2;
 }
 
 .prose p {

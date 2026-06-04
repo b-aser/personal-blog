@@ -1,7 +1,8 @@
 'use client'
 
-import { useActionState } from 'react'
+import { useActionState, useEffect } from 'react'
 import { submitComment, type CommentFormState } from '@/app/(frontend)/actions/comments'
+import { saveCommentDeleteToken } from '@/lib/comment-tokens'
 
 const initialState: CommentFormState = { ok: false, message: '' }
 
@@ -12,6 +13,12 @@ type Props = {
 
 export function CommentForm({ postId, postSlug }: Props) {
   const [state, action, pending] = useActionState(submitComment, initialState)
+
+  useEffect(() => {
+    if (state.ok && state.commentId && state.deleteToken) {
+      saveCommentDeleteToken(state.commentId, state.deleteToken)
+    }
+  }, [state])
 
   return (
     <form action={action} className="space-y-4">

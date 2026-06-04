@@ -26,8 +26,15 @@ async function main() {
     ADD COLUMN IF NOT EXISTS likes numeric DEFAULT 0;
   `)
 
+  await client.query(`
+    ALTER TABLE comments
+    ADD COLUMN IF NOT EXISTS delete_token varchar;
+  `)
+
   await client.end()
-  console.log('Schema sync complete: posts.tags and posts.likes are present.')
+  console.log(
+    'Schema sync complete: posts.tags, posts.likes, and comments.delete_token are present.',
+  )
 }
 
 main().catch((err) => {
