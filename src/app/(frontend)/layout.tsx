@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Montserrat, Playfair_Display, Open_Sans } from "next/font/google";
+import { SiteFooter } from "@/components/SiteFooter";
+import { SiteHeader } from "@/components/SiteHeader";
 import { ThemeProvider } from "@/components/theme-provider";
 import "./globals.css";
 
@@ -48,7 +50,9 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          {children}
+          <SiteHeader />
+          <div className="flex-1">{children}</div>
+          <SiteFooter />
         </ThemeProvider>
       </body>
     </html>

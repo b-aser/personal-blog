@@ -1,14 +1,11 @@
 import { PostCard } from '@/components/PostCard'
-import { SiteHeader } from '@/components/SiteHeader'
 import { getPublishedPosts } from '@/lib/posts'
 
 export default async function Home() {
   const posts = await getPublishedPosts()
 
   return (
-    <>
-      <SiteHeader />
-      <main className="mx-auto max-w-3xl px-6 py-12">
+    <main className="mx-auto max-w-3xl px-6 py-12">
         <div className="mb-12">
           <h1 className="text-4xl font-semibold tracking-tight">Writing</h1>
           <p className="mt-3 text-lg text-zinc-600 dark:text-zinc-400">
@@ -38,7 +35,6 @@ export default async function Home() {
             ))}
           </div>
         )}
-      </main>
-    </>
+    </main>
   )
 }

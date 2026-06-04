@@ -23,7 +23,7 @@ export function PostCard({ post }: Props) {
           <img
             src={image.url}
             alt={image.alt ?? post.title}
-            className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.02]"
+            className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.2]"
           />
         </div>
       )}

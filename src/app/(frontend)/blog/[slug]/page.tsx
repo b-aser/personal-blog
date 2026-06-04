@@ -5,7 +5,6 @@ import { CommentForm } from '@/components/CommentForm'
 import { CommentList } from '@/components/CommentList'
 import { PostActionBar } from '@/components/PostActionBar'
 import { RichText } from '@/components/RichText'
-import { SiteHeader } from '@/components/SiteHeader'
 import { getApprovedCommentsForPost, getPostBySlug } from '@/lib/posts'
 import {
   formatRelativeDate,
@@ -66,9 +65,7 @@ export default async function BlogPostPage({ params }: Props) {
   )
 
   return (
-    <>
-      <SiteHeader />
-      <main className="mx-auto max-w-3xl px-6 py-12">
+    <main className="mx-auto max-w-3xl px-6 py-12">
         <Link
           href="/"
           className="text-sm text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-300"
@@ -166,7 +163,6 @@ export default async function BlogPostPage({ params }: Props) {
             </div>
           </div>
         </section>
-      </main>
-    </>
+    </main>
   )
 }
